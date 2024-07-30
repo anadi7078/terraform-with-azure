@@ -1,0 +1,49 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - docker.io
+  - expect
+
+runcmd:
+  - sudo systemctl start docker
+  - sudo systemctl enable docker
+  - apt-get install -y libssl-dev libffi-dev python3-dev build-essential 
+  - curl -sL https://aka.ms/InstallAzureCLIDeb | bash 
+
+  # Docker user group
+  - usermod -aG docker **********
+  - newgrp docker
+  - usermod -aG sudo **********
+
+  # creating agent & download files
+  - mkdir -p /home/myagent1
+  - cd /home/myagent1
+  - wget https://vstsagentpackage.azureedge.net/agent/3.242.1/vsts-agent-linux-x64-3.242.1.tar.gz
+  - tar -xvzf vsts-agent-linux-x64-3.242.1.tar.gz
+  
+  # creating myagent1 and root access
+  - sudo adduser --disabled-password --gecos "" myagent1
+  - echo "myagent1:**********" | sudo chpasswd
+  - sudo usermod -aG sudo myagent1
+  - chown -R myagent1:myagent1 /home/myagent1
+  
+  # install&start agent
+  - su - myagent1 -c "
+      cd /home/myagent1/myagent;
+      ./bin/installdependencies.sh;
+      expect -c '
+      spawn ./config.sh
+      expect \"Enter (Y/N) Accept the Team Explorer Everywhere license agreement now?\" { send \"Y\r\" }
+      expect \"Enter server URL\" { send \"https://dev.azure.com/**********\r\" }
+      expect \"Enter authentication type\" { send \"\r\" }
+      expect \"Enter personal access token\" { send \"o3lampwp4fd6wr2po5dg6a7ohew54xnjme5qj25hrzinb3vgj3sq\r\" }
+      expect \"Enter agent pool\" { send \"azurevm\r\" }
+      expect \"Enter agent name\" { send \"\r\" }
+      expect \"Enter work folder\" { send \"\r\" }
+      expect eof'
+      expect -c '
+      spawn sudo ./svc.sh install
+      expect \"\[sudo\] password for myagent1:\" { send \"**********\r\" }
+      expect eof'
+      sudo ./svc.sh start"
