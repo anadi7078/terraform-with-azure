@@ -18,7 +18,7 @@ resource "azurerm_linux_virtual_machine" "VM_cp" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
-  //custom_data = filebase64("${path.module}/cloud-init.yaml")
+  custom_data = filebase64("${path.module}/cloud-init.yaml")
 
   tags = var.tags
 }
