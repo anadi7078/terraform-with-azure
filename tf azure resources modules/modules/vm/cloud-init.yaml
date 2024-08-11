@@ -37,7 +37,7 @@ runcmd:
       expect \"Enter (Y/N) Accept the Team Explorer Everywhere license agreement now?\" { send \"Y\r\" }
       expect \"Enter server URL\" { send \"https://dev.azure.com/**********\r\" }
       expect \"Enter authentication type\" { send \"\r\" }
-      expect \"Enter personal access token\" { send \"o3lampwp4fd6wr2po5dg6a7ohew54xnjme5qj25hrzinb3vgj3sq\r\" }
+      expect \"Enter personal access token\" { send \"************************************\r\" }
       expect \"Enter agent pool\" { send \"azurevm\r\" }
       expect \"Enter agent name\" { send \"\r\" }
       expect \"Enter work folder\" { send \"\r\" }
