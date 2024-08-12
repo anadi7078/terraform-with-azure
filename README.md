@@ -1,4 +1,5 @@
 You can find an article below the link.
+
 https://medium.com/@mucahidozcelik/deploying-net-core-application-on-azure-app-service-with-terraform-11b49d2cfc88
 
 
